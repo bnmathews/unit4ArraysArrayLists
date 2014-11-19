@@ -36,18 +36,6 @@ public class ArrayMethods
         }
     }
     
-    public void removeMiddle()
-    {
-        if (values.length % 2 == 0)
-        {
-            
-        }
-        else
-        {
-            System.out.println("The middle value is: " + values.length/2 + ", or" + values[values.length / 2]); 
-        }
-    }
-    
     public void shiftRight()
     {
         int firstVal = values[0];
