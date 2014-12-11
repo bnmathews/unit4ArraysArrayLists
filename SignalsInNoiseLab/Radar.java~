@@ -61,7 +61,7 @@ public class Radar
         }
         
         // detect the monster
-        currentScan[monsterLocationRow][monsterLocationCol] = true;
+        currentScan[monsterLocationRow][monsterLocationCol] = true;currentScan[row][col] = false;currentScan[row][col] = false; 
         
         // inject noise into the grid
         injectNoise();
