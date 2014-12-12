@@ -17,9 +17,9 @@ public class RadarViewer
         // create the radar, set the monster location, and perform the initial scan
         final int ROWS = 100;
         final int COLS = 100;
-        Radar radar = new Radar(ROWS, COLS);
+        Radar radar = new Radar(ROWS, COLS, 1, 1);
         radar.setNoiseFraction(0.00);
-        radar.scan(-1,-1);
+        radar.scan();
         
         JFrame frame = new JFrame();
         
@@ -43,7 +43,7 @@ public class RadarViewer
         {
             Thread.sleep(100); // sleep 100 milliseconds (1/10 second)
             
-            radar.scan(-1,-1);
+            radar.scan();
             
             //System.out.println(radar.displayAccumulator());
             

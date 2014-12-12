@@ -23,6 +23,12 @@ public class Radar
     
     // number of scans of the radar since construction
     private int numScans;
+    
+    // number to increment or decrement the monster's x position by
+    private int dx;
+    
+    // number to increment or decrement the monster's y position by
+    private int dy;
 
     /**
      * Constructor for objects of class Radar
@@ -30,7 +36,7 @@ public class Radar
      * @param   rows    the number of rows in the radar grid
      * @param   cols    the number of columns in the radar grid
      */
-    public Radar(int rows, int cols)
+    public Radar(int rows, int cols, int dx, int dy)
     {
         // initialize instance variables
         currentScan = new boolean[rows][cols]; // elements will be set to false
@@ -41,6 +47,10 @@ public class Radar
         monsterLocationRow = (int)(Math.random() * rows);
         monsterLocationCol = (int)(Math.random() * cols);
         
+        this.dx = dx;
+        
+        this.dy = dy;
+        
         noiseFraction = 0.05;
         numScans= 0;
     }
@@ -49,7 +59,7 @@ public class Radar
      * Performs a scan of the radar. Noise is injected into the grid and the accumulator is updated.
      * 
      */
-    public void scan(int dx, int dy)
+    public void scan()
     {
         // zero the current scan grid
         for(int row = 0; row < currentScan.length; row++)
@@ -59,15 +69,19 @@ public class Radar
                 currentScan[row][col] = false;
             }
         }
+          
+        // copy currentScan into previousScan using a for loop
         
         // detect the monster
-        currentScan[monsterLocationRow][monsterLocationCol] = true;currentScan[row][col] = false;currentScan[row][col] = false; 
+        currentScan[monsterLocationCol][monsterLocationRow] = true;
         
         // inject noise into the grid
         injectNoise();
         
         // moves the monster
-        moveMonster(dx,dy);
+        moveMonster();
+        
+        // make another accumultor (-5 - 5 row and col) for dx and dy vals.
         
         // udpate the accumulator
         for(int row = 0; row < currentScan.length; row++)
@@ -108,9 +122,10 @@ public class Radar
      * @param   dx     the number to increment or decrement the monster's x position
      * @param   dy      the number to increment or decrement the monster's y position
      */
-    public void moveMonster(int dx, int dy)
+    public void moveMonster()
     {
         // remember the row and col of the monster's location
+        /*
         if (monsterLocationRow < currentScan.length - dx)
         {
             monsterLocationRow += dx;
@@ -126,7 +141,55 @@ public class Radar
                 monsterLocationRow = 0;
             }
         }
-        
+        */
+       
+        if (dx < 0) // if dx is negative
+            {
+                if (monsterLocationRow > 0 - dx)
+                {
+                    monsterLocationRow += 1;
+                }
+                else
+                {
+                    monsterLocationRow = currentScan.length;
+                }
+            }
+        else
+            {
+                if (monsterLocationRow < currentScan.length - dx)
+                {
+                    monsterLocationRow += dx;
+                }
+                else
+                {
+                    monsterLocationRow = 0;
+                }
+            }
+            
+        if (dy < 0) // if dy is negative
+            {
+                if (monsterLocationCol > 0 - dy)
+                {
+                    monsterLocationCol += dy;
+                }
+                else
+                {
+                    monsterLocationCol = currentScan[0].length;
+                }
+            }
+        else
+            {
+                if (monsterLocationCol < currentScan[0].length - dy)
+                {
+                    monsterLocationCol += dy;
+                }
+                else
+                {
+                    monsterLocationCol = 0;
+                }
+            }
+       
+        /*
         if (monsterLocationCol < currentScan[0].length - dy)
         {
             monsterLocationCol += dy;
@@ -142,6 +205,7 @@ public class Radar
                 monsterLocationRow = 0;
             }
         }
+        */
     
     }
 
