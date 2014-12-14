@@ -11,6 +11,10 @@ public class Radar
     // stores whether each cell triggered detection for the current scan of the radar
     private boolean[][] currentScan;
     
+    private boolean[][] oldScan;
+    
+    private int[][] differences;
+    
     // value of each cell is incremented for each scan in which that cell triggers detection 
     private int[][] accumulator;
     
@@ -40,6 +44,10 @@ public class Radar
     {
         // initialize instance variables
         currentScan = new boolean[rows][cols]; // elements will be set to false
+
+        differences = new int[11][11];
+        
+        oldScan = new boolean[rows][cols];
         accumulator = new int[rows][cols]; // elements will be set to 0
         
         // randomly set the location of the monster (can be explicity set through the
@@ -52,7 +60,7 @@ public class Radar
         this.dy = dy;
         
         noiseFraction = 0.05;
-        numScans= 0;
+        numScans = 0;
     }
     
     /**
@@ -70,6 +78,10 @@ public class Radar
             }
         }
           
+        int predictDx = 0;
+        
+        int predictDy = 0;
+        
         // copy currentScan into previousScan using a for loop
         
         // detect the monster
@@ -95,20 +107,77 @@ public class Radar
             }
         }
         
+        if (numScans > 0)
+        {   
+            //System.out.println("Checking the old scan");
+            for(int row = 0; row < oldScan.length; row++) //we need to look through the old scan
+            {
+                for(int col = 0; col < oldScan[0].length; col++)
+                {
+                    if ((oldScan[row][col]) == true) // if an element is found in the previous scan
+                    {
+                        //System.out.println("Noise found!");
+                        for(int row2 = 0; row2 < currentScan.length; row2++) // check the new scan
+                        {
+                            for(int col2 = 0; col2 < currentScan[0].length; col2++)
+                            {
+                                if (currentScan[row2][col2] == true) // if an element is found in the new scan
+                                {
+                                    if (row2-row > -6 && row2-row < 6)
+                                    {
+                                        if (col2-col > -6 && col2-col < 6)
+                                        {
+                                            //System.out.println("Short col distance detected!" + (col2-col));
+                                            differences[ (row2-row) + 5 ][ (col2-col) + 5 ]++;
+                                        }
+                                        //System.out.println("Short row distance detected!" + (row2-row));
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+            for(int row = 0; row < oldScan.length; row++) //now clear old scan
+            {
+                for(int col = 0; col < oldScan[0].length; col++)
+                {
+                    oldScan[row][col] = false;
+                }
+            }
+            //System.out.println("Old scan cleared");
+            for(int row = 0; row < currentScan.length; row++)
+            {
+                    for(int col = 0; col < currentScan[0].length; col++)
+                    {
+                        if (currentScan[row][col] == true) // add elements from the current scan to the soon-to-be previous scan
+                        {
+                            oldScan[row][col] = true;
+                        }
+                    }
+            }
+            //System.out.println("Old scan updated");
+        }    
+        
         // keep track of the total number of scans
         numScans++;
+        System.out.println(numScans);
+        System.out.println(displayOld());
     }
     
-    public String displayAccumulator()
+    public String displayOld()
     {
         String str = "";
         //table.length = number of rows in table
-        for( int row = 0; row < accumulator.length; row++ )
+        for( int row = 0; row < differences.length; row++ )
         {
             //table[row].length = number of columns in a row
-            for( int col = 0; col < accumulator[row].length; col++ )
+            for( int col = 0; col < differences[row].length; col++ )
             {
-                str += accumulator[row][col] + "\t";
+                str += differences[row][col] + "\t";
             }
             str += "\n";
         }
@@ -124,38 +193,16 @@ public class Radar
      */
     public void moveMonster()
     {
-        // remember the row and col of the monster's location
-        /*
-        if (monsterLocationRow < currentScan.length - dx)
-        {
-            monsterLocationRow += dx;
-        }
-        else
-        {
-            if (dx < 0)
-            {
-                monsterLocationRow = currentScan.length;
-            }
-            else
-            {
-                monsterLocationRow = 0;
-            }
-        }
-        */
        
-        monsterLocationRow += dx;
-        monsterLocationCol += dy;
-       
-        /*
         if (dx < 0) // if dx is negative
             {
                 if (monsterLocationRow > 0 - dx)
                 {
-                    monsterLocationRow += 1;
+                    monsterLocationRow += dx;
                 }
                 else
                 {
-                    monsterLocationRow = currentScan.length;
+                    monsterLocationRow = currentScan.length + dx;
                 }
             }
         else
@@ -178,7 +225,7 @@ public class Radar
                 }
                 else
                 {
-                    monsterLocationCol = currentScan[0].length;
+                    monsterLocationCol = currentScan[0].length + dy;
                 }
             }
         else
@@ -192,24 +239,6 @@ public class Radar
                     monsterLocationCol = 0;
                 }
             }
-        /*
-        /*
-        if (monsterLocationCol < currentScan[0].length - dy)
-        {
-            monsterLocationCol += dy;
-        }
-        else
-        {
-            if (dy < 0)
-            {
-                monsterLocationRow = currentScan.length;
-            }
-            else
-            {
-                monsterLocationRow = 0;
-            }
-        }
-        */
     
     }
 

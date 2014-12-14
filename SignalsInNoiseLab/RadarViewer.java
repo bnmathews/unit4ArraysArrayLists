@@ -18,7 +18,7 @@ public class RadarViewer
         final int ROWS = 100;
         final int COLS = 100;
         Radar radar = new Radar(ROWS, COLS, 1, 1);
-        radar.setNoiseFraction(0.00);
+        radar.setNoiseFraction(0.01);
         radar.scan();
         
         JFrame frame = new JFrame();
