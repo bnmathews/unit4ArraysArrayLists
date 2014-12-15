@@ -1,4 +1,5 @@
 import javax.swing.JFrame;
+import java.util.Scanner;
 
 /**
  * Class that contains the main method for the program and creates the frame containing the component.
@@ -14,11 +15,23 @@ public class RadarViewer
      */
     public static void main(String[] args) throws InterruptedException
     {
+        // array for user inputted dx and dy, to be transfered into the radar class
+        int[] monsterMotion = new int[2];
+        
+        // user input
+        Scanner s = new Scanner(System.in);
+        
+        System.out.print("What is the dx of your monster? ");
+        monsterMotion[0] = s.nextInt();
+        
+        System.out.print("What is the dy of your monster? ");
+        monsterMotion[1] = s.nextInt();
+        
         // create the radar, set the monster location, and perform the initial scan
         final int ROWS = 100;
         final int COLS = 100;
-        Radar radar = new Radar(ROWS, COLS, -4, 1);
-        radar.setNoiseFraction(0.00);
+        Radar radar = new Radar(ROWS, COLS, monsterMotion[0], monsterMotion[1]);
+        radar.setNoiseFraction(0.015);
         radar.scan();
         
         JFrame frame = new JFrame();
@@ -41,15 +54,16 @@ public class RadarViewer
         // after each scan, instruct the Java Run-Time to redraw the window
         for(int i = 0; i < 100; i++)
         {
-            Thread.sleep(50); // sleep 100 milliseconds (1/10 second)
+            Thread.sleep(100); // sleep 100 milliseconds (1/10 second)
             
             radar.scan();
             
             frame.repaint();
         }
         
-        System.out.println(radar.findMotion());
-        
+        // find and print the motion of the monster
+        System.out.println("The monster's change in x is:" + radar.findMotion()[0]);
+        System.out.println("The monster's change in y is:" + radar.findMotion()[1]);
     }
 
 }

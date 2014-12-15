@@ -44,14 +44,15 @@ public class Radar
     {
         // initialize instance variables
         currentScan = new boolean[rows][cols]; // elements will be set to false
-
-        differences = new int[11][11];
         
-        oldScan = new boolean[rows][cols];
+        differences = new int[11][11]; // elements will be set to false
+        
+        oldScan = new boolean[rows][cols]; // elements will be set to 0
+        
         accumulator = new int[rows][cols]; // elements will be set to 0
         
         // randomly set the location of the monster (can be explicity set through the
-        //  setMonsterLocation method
+        // setMonsterLocation method
         monsterLocationRow = (int)(Math.random() * rows);
         monsterLocationCol = (int)(Math.random() * cols);
         
@@ -77,12 +78,6 @@ public class Radar
                 currentScan[row][col] = false;
             }
         }
-          
-        int predictDx = 0;
-        
-        int predictDy = 0;
-        
-        // copy currentScan into previousScan using a for loop
         
         // detect the monster
         currentScan[monsterLocationCol][monsterLocationRow] = true;
@@ -92,8 +87,6 @@ public class Radar
         
         // moves the monster
         moveMonster();
-        
-        // make another accumultor (-5 - 5 row and col) for dx and dy vals.
         
         // udpate the accumulator
         for(int row = 0; row < currentScan.length; row++)
@@ -107,32 +100,28 @@ public class Radar
             }
         }
         
-        if (numScans > 0)
+        if (numScans > 0) //check to see if one scan has already happened
         {   
-            //System.out.println("Checking the old scan");
-            for(int row = 0; row < oldScan.length; row++) //we need to look through the old scan
+            for(int row = 0; row < oldScan.length; row++) // look through the old scan
             {
                 for(int col = 0; col < oldScan[0].length; col++)
                 {
-                    if ((oldScan[row][col]) == true) // if an element is found in the previous scan
+                    if ((oldScan[row][col]) == true) // if an element is found in the previous scan (might be noise)
                     {
-                        //System.out.println("Noise found!");
-                        for(int row2 = 0; row2 < currentScan.length; row2++) // check the new scan
+                        for(int row2 = 0; row2 < currentScan.length; row2++) // look through the new scan
                         {
                             for(int col2 = 0; col2 < currentScan[0].length; col2++)
                             {
                                 if (currentScan[row2][col2] == true) // if an element is found in the new scan
                                 {
-                                    if (row2-row > -6 && row2-row < 6)
+                                    if (row2-row > -6 && row2-row < 6) // check if the difference in rows is between -5 and 5
                                     {
-                                        if (col2-col > -6 && col2-col < 6)
+                                        if (col2-col > -6 && col2-col < 6) // check if the difference in columns is between -5 and 5
                                         {
-                                            //System.out.println("Short col distance detected!" + (col2-col));
-                                            differences[ (col2-col) + 5 ][ (row2-row) + 5 ]++;
+                                            // increment a spot in the differenes 2D array
+                                            differences[ (row2-row) + 5 ][ (col2-col) + 5 ]++;
                                         }
-                                        //System.out.println("Short row distance detected!" + (row2-row));
                                     }
-                                    
                                 }
                             }
                         }
@@ -140,16 +129,15 @@ public class Radar
                 }
             }
             
-            
-            for(int row = 0; row < oldScan.length; row++) //now clear old scan
+            for(int row = 0; row < oldScan.length; row++) // clear the values in the old scan
             {
                 for(int col = 0; col < oldScan[0].length; col++)
                 {
                     oldScan[row][col] = false;
                 }
             }
-            //System.out.println("Old scan cleared");
-            for(int row = 0; row < currentScan.length; row++)
+            
+            for(int row = 0; row < currentScan.length; row++) // look through the current scan on screen
             {
                     for(int col = 0; col < currentScan[0].length; col++)
                     {
@@ -159,43 +147,62 @@ public class Radar
                         }
                     }
             }
-            //System.out.println("Old scan updated");
         }    
         
         // keep track of the total number of scans
         numScans++;
-        System.out.println(numScans);
-        System.out.println(displayOld());
+        
+        //System.out.println(numScans); 
+        //System.out.println(displayDifferences());
     }
-    
-    public String findMotion()
+    /**
+     * Looks through the 2D array of possible dx and dy pairs and gets the correct value
+     * @return an array of the detected monster's dx and dy values
+     */
+    public int[] findMotion()
     {
-        int[] maxArray = new int[2];
+        // create a 2 element array, the first will be the dx, the second will be the dy
+        int[] maxArray = new int[2]; 
+        
+        // create the maximum number, takes in the very first value of differences
         int max = differences[0][0];
+        
+        // assume the value at point (0,0) in the differences 2D array is dx -5 and dy -5
+        maxArray[0] = -5;
+        maxArray[1] = -5; 
+        
         for( int row = 0; row < differences.length; row++ )
         {
-            //table[row].length = number of columns in a row
             for( int col = 0; col < differences[row].length; col++ )
             {
                 if (differences[row][col] > max)
                 {
+                    // increase the max
                     max = differences[row][col];
+                    
+                    // set the first position of maxArray to the current row, minus 5
                     maxArray[0] = (row - 5);
+                    
+                    // set the second position of maxArray to the current col, minus 5
                     maxArray[1] = (col - 5); 
                 }
             }
         }
         
-        return ("The monster's change in x is: " + maxArray[0] + "\nIts change in y is: " + maxArray[1]);
+        return maxArray;
     }
     
-    public String displayOld()
+    /**
+     * Displays the 2D array of various dx and dy pairs
+     * 
+     */
+    public String displayDifferences()
     {
         String str = "";
-        //table.length = number of rows in table
+        //differences.length = number of rows in differences
         for( int row = 0; row < differences.length; row++ )
         {
-            //table[row].length = number of columns in a row
+            //differences[row].length = number of columns in a row
             for( int col = 0; col < differences[row].length; col++ )
             {
                 str += differences[row][col] + "\t";
