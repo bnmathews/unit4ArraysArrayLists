@@ -128,7 +128,7 @@ public class Radar
                                         if (col2-col > -6 && col2-col < 6)
                                         {
                                             //System.out.println("Short col distance detected!" + (col2-col));
-                                            differences[ (row2-row) + 5 ][ (col2-col) + 5 ]++;
+                                            differences[ (col2-col) + 5 ][ (row2-row) + 5 ]++;
                                         }
                                         //System.out.println("Short row distance detected!" + (row2-row));
                                     }
@@ -166,6 +166,27 @@ public class Radar
         numScans++;
         System.out.println(numScans);
         System.out.println(displayOld());
+    }
+    
+    public String findMotion()
+    {
+        int[] maxArray = new int[2];
+        int max = differences[0][0];
+        for( int row = 0; row < differences.length; row++ )
+        {
+            //table[row].length = number of columns in a row
+            for( int col = 0; col < differences[row].length; col++ )
+            {
+                if (differences[row][col] > max)
+                {
+                    max = differences[row][col];
+                    maxArray[0] = (row - 5);
+                    maxArray[1] = (col - 5); 
+                }
+            }
+        }
+        
+        return ("The monster's change in x is: " + maxArray[0] + "\nIts change in y is: " + maxArray[1]);
     }
     
     public String displayOld()
