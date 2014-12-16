@@ -62,8 +62,8 @@ public class RadarViewer
         }
         
         // find and print the motion of the monster
-        System.out.println("The monster's change in x is:" + radar.findMotion[0]);
-        System.out.println("The monster's change in y is:" + radar.findMotion[1]);
+        System.out.println("The monster's change in x is:" + radar.findMotion()[0]);
+        System.out.println("The monster's change in y is:" + radar.findMotion()[1]);
     }
 
 }

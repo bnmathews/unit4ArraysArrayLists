@@ -157,9 +157,9 @@ public class Radar
     }
     /**
      * Looks through the 2D array of possible dx and dy pairs and gets the correct value
-     * @return a formatted string of the detected monster's dx and dy values
+     * @return an array of the detected monster's dx and dy values
      */
-    public String findMotion()
+    public int[] findMotion()
     {
         // create a 2 element array, the first will be the dx, the second will be the dy
         int[] maxArray = new int[2]; 
@@ -189,7 +189,7 @@ public class Radar
             }
         }
         
-        return ("\nThe monster's change in x is: " + maxArray[1] + "\nThe monster's change in y is: " + maxArray[0]);
+        return maxArray;
     }
     
     /**

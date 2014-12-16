@@ -4,8 +4,8 @@ import java.util.Scanner;
 /**
  * Class that contains the main method for the program and creates the frame containing the component.
  * 
- * @author @gcschmit
- * @version 19 July 2014
+ * @author @bnmathews
+ * @version 16 December 2014
  */
 public class RadarViewer
 {

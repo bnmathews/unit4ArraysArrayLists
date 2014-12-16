@@ -4,15 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Write a description of test class Test01 here.
+ * Tests to make sure Radar is getting the correct value
  * 
  * @author @bnmathews
- * @version 15 December 2014
+ * @version 16 December 2014
  */
 public class RadarTest
 {
-    /** description of instance variable x (add comment for each instance variable) */
-    private int x;
 
     /**
      * Default constructor for objects of class RadarTest
@@ -48,7 +46,7 @@ public class RadarTest
         
         final int ROWS = 100;
         final int COLS = 100;
-        Radar radar = new Radar(ROWS, COLS, 1, 1);
+        Radar radar = new Radar(ROWS, COLS, 2, 3);
         radar.setNoiseFraction(0.015);
         radar.scan();
         
@@ -61,11 +59,11 @@ public class RadarTest
        
         //if (radar.findMotion()[0] != 1)
         //{
-            assertEquals(1,radar.findMotion()[0]);
+            assertEquals(2,radar.findMotion()[0]);
         //}
         //if (radar.findMotion()[1] != 1)
         //{
-            assertEquals(1,radar.findMotion()[1]);
+            assertEquals(3,radar.findMotion()[1]);
         //}
     }
 }

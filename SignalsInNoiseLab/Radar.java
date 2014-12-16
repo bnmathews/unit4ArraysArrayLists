@@ -181,10 +181,10 @@ public class Radar
                     max = differences[row][col];
                     
                     // set the first position of maxArray to the current row, minus 5
-                    maxArray[0] = (row - 5);
+                    maxArray[1] = (row - 5);
                     
                     // set the second position of maxArray to the current col, minus 5
-                    maxArray[1] = (col - 5); 
+                    maxArray[0] = (col - 5); 
                 }
             }
         }
